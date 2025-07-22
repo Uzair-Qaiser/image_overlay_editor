@@ -6,19 +6,35 @@ class ImagePickerService {
   static final ImagePicker _picker = ImagePicker();
 
   static Future<bool> _requestPermissions() async {
-    Map<Permission, PermissionStatus> statuses = await [
-      Permission.photos,
-      Permission.camera,
-    ].request();
+    try {
+      // Request both permissions
+      Map<Permission, PermissionStatus> statuses = await [
+        Permission.photos,
+        Permission.camera,
+      ].request();
 
-    return statuses[Permission.photos]!.isGranted ||
-        statuses[Permission.camera]!.isGranted;
+      // Check if at least one permission is granted
+      bool hasPermission = statuses[Permission.photos]!.isGranted ||
+          statuses[Permission.camera]!.isGranted;
+
+      if (!hasPermission) {
+        // If permissions are denied, show a message to the user
+        throw Exception(
+          'Permission denied. Please grant camera and photo library permissions in your device settings.',
+        );
+      }
+
+      return hasPermission;
+    } catch (e) {
+      throw Exception('Failed to request permissions: $e');
+    }
   }
 
   static Future<File?> pickImageFromGallery() async {
     try {
+      // Check if we have permission
       if (!await _requestPermissions()) {
-        throw Exception('Permission denied');
+        throw Exception('Permission denied for gallery access');
       }
 
       final XFile? image = await _picker.pickImage(
@@ -26,17 +42,27 @@ class ImagePickerService {
         imageQuality: 80,
       );
 
-      return image != null ? File(image.path) : null;
+      if (image == null) {
+        return null;
+      }
+
+      return File(image.path);
     } catch (e) {
-      print('Error picking image from gallery: $e');
-      return null;
+      // Provide a more helpful error message
+      if (e.toString().contains('Permission denied')) {
+        throw Exception(
+          'Gallery access denied. Please grant photo library permission in your device settings.',
+        );
+      }
+      throw Exception('Error picking image from gallery: $e');
     }
   }
 
   static Future<File?> pickImageFromCamera() async {
     try {
+      // Check if we have permission
       if (!await _requestPermissions()) {
-        throw Exception('Permission denied');
+        throw Exception('Permission denied for camera access');
       }
 
       final XFile? image = await _picker.pickImage(
@@ -44,17 +70,27 @@ class ImagePickerService {
         imageQuality: 80,
       );
 
-      return image != null ? File(image.path) : null;
+      if (image == null) {
+        return null;
+      }
+
+      return File(image.path);
     } catch (e) {
-      print('Error picking image from camera: $e');
-      return null;
+      // Provide a more helpful error message
+      if (e.toString().contains('Permission denied')) {
+        throw Exception(
+          'Camera access denied. Please grant camera permission in your device settings.',
+        );
+      }
+      throw Exception('Error picking image from camera: $e');
     }
   }
 
   static Future<List<File>> pickMultipleImages() async {
     try {
+      // Check if we have permission
       if (!await _requestPermissions()) {
-        throw Exception('Permission denied');
+        throw Exception('Permission denied for gallery access');
       }
 
       final List<XFile> images = await _picker.pickMultiImage(
@@ -63,8 +99,13 @@ class ImagePickerService {
 
       return images.map((xFile) => File(xFile.path)).toList();
     } catch (e) {
-      print('Error picking multiple images: $e');
-      return [];
+      // Provide a more helpful error message
+      if (e.toString().contains('Permission denied')) {
+        throw Exception(
+          'Gallery access denied. Please grant photo library permission in your device settings.',
+        );
+      }
+      throw Exception('Error picking multiple images: $e');
     }
   }
 }

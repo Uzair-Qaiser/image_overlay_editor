@@ -1,25 +1,26 @@
 name: image_overlay_editor
-description: A comprehensive Flutter package for editing images with overlay images from gallery, camera, or network. Features drag, resize, and rotate functionality.
+description: A super simple Flutter package for editing images with overlays. Perfect for apps that need to upload edited images to cloud storage or databases.
 version: 1.0.0
+homepage: https://github.com/yourusername/image_overlay_editor
 
 environment:
-  sdk: ^3.8.0
+  sdk: '>=3.0.0 <4.0.0'
   flutter: ">=3.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
   image_picker: ^1.1.2
-  path_provider: ^2.1.4
-  screenshot: ^2.1.0
-  permission_handler: ^11.3.1
+  path_provider: ^2.1.5
+  screenshot: ^3.0.0
+  permission_handler: ^12.0.1
   cached_network_image: ^3.4.1
   flutter_screenutil: ^5.9.3
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^5.0.0
+  flutter_lints: ^3.0.0
 
 flutter:
-  uses-material-design: true
+  # No assets needed for this package

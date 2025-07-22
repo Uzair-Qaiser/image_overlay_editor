@@ -1,10 +1,15 @@
 library image_overlay_editor;
 
-export 'src/widgets/image_editor_widget.dart';
-export 'src/widgets/overlay_image_widget.dart';
-export 'src/widgets/image_picker_bottom_sheet.dart';
+// Main widget - simple to use
+export 'src/widgets/simple_image_editor.dart';
+
+// Models for advanced users
 export 'src/models/overlay_image.dart';
 export 'src/models/editor_config.dart';
+
+// Services for advanced users
 export 'src/services/image_picker_service.dart';
 export 'src/services/image_processor_service.dart';
+
+// Utils for advanced users
 export 'src/utils/image_utils.dart';
